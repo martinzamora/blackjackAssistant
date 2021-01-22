@@ -73,6 +73,7 @@ int main(int argc, char const *argv[]) {
   string dealerCard;
   int s=0;
   string output;
+  string temp;
   vector <string> userCards;
   userCards.push_back("-1");
   userCards.push_back("-1");
@@ -93,7 +94,16 @@ int main(int argc, char const *argv[]) {
       cout<< "your total: "<<s<<endl;
       output = coach(s, dealerCard);
       cout<<output<<endl;
-      exit = true;
+      if(output == "Stand" || output == "Double Down" || output == "Congrats! Blackjack" ){
+        cout << "Hand Ended"<<endl;
+        userCards.resize(2);
+        newHand = true;
+      }
+      else{
+        cout<<"What was your new card?"<<endl;
+        cin>>temp;
+        userCards.push_back(temp);
+      }
     }
   }
   return 0;
