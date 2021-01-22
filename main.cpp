@@ -2,6 +2,13 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+struct hand{
+  string status;
+  int sum;
+  int size;
+  vector <string> cards;
+  string dealerC;
+};
 int cardToInt (string card){
   int res;
   if(card == "A" || card == "a") res=11;
@@ -25,12 +32,12 @@ int sumCards (vector <string> v){
   return res;
 }
 
-string coach(int sum, string a, bool status){
+string coach(int sum, string a, int numCards){
   string res;
   string stand = "Stand";
   string hit = "Hit";
   string d;
-  if(!status) d += "Hit";
+  if(numCards > 2) d += "Hit";
   else d+="Double Down";
   int dealer = cardToInt(a);
   if(sum==21){
@@ -60,55 +67,43 @@ string coach(int sum, string a, bool status){
   return res;
 }
 
+
 int main(int argc, char const *argv[]) {
   cout<<"Welcome to My Blackjack Coach App"<<endl;
   cout<< "You should input the dealer face card and your cards."<<endl;
   cout<<"You will be coached on your best option."<<endl;
-  //vector <string> cardOptions = ["1","2","3","4","5","6","7","8","9","10","J","Q","K","A"];
-  /*vector <string>cardOptions;
-  for (int i =1; i<11; i++){ cardOptions.push_back(to_string(i));}
-  cardOptions.push_back("J");
-  cardOptions.push_back("Q");
-  cardOptions.push_back("K");
-  cardOptions.push_back("A");
-  */
-  //while waiting for input
-  bool exit = false;
-  bool newHand = true;
-  bool evaluate = false;
-  string dealerCard;
-  int s=0;
+  hand userHand;
+  userHand.status = "new";
   string output;
   string temp;
-  vector <string> userCards;
-  userCards.push_back("-1");
-  userCards.push_back("-1");
-  while(!exit){
-    //grab user input
-    if(newHand){
+  userHand.cards.push_back("-1");
+  userHand.cards.push_back("-1");
+  while(userHand.status!="exit"){
+    if(userHand.status == "new"){
       cout<<"What is the Dealer's face card?"<<endl;
-      cin>>dealerCard;
+      cin>>userHand.dealerC;
       cout<<"What is you first card?"<<endl;
-      cin>>userCards[0];
+      cin>>userHand.cards[0];
       cout<<"What is you second card?"<<endl;
-      cin>>userCards[1];
-      newHand = false;
-      evaluate = true;
+      cin>>userHand.cards[1];
+      userHand.size = 2;
+      userHand.status = "evaluate";
     }
-    if(evaluate){
-      s = sumCards(userCards);
-      cout<< "your total: "<<s<<endl;
-      output = coach(s, dealerCard, newHand);
+    if(userHand.status == "evaluate"){
+      userHand.sum = sumCards(userHand.cards);
+      cout<< "your total: "<<userHand.sum<<endl;
+      output = coach(userHand.sum, userHand.dealerC, userHand.size);
       cout<<output<<endl;
       if(output == "Stand" || output == "Double Down" || output == "Congrats! Blackjack" || output== "Sorry, hand over." ){
         cout << "Hand Ended"<<endl;
-        userCards.resize(2);
-        newHand = true;
+        userHand.cards.resize(2);
+        userHand.status = "new";
       }
       else{
         cout<<"What was your new card?"<<endl;
         cin>>temp;
-        userCards.push_back(temp);
+        userHand.cards.push_back(temp);
+        userHand.size++;
       }
     }
   }
