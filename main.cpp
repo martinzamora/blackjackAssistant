@@ -25,31 +25,37 @@ int sumCards (vector <string> v){
   return res;
 }
 
-string coach(int sum, string a){
+string coach(int sum, string a, bool status){
   string res;
+  string stand = "Stand";
+  string hit = "Hit";
+  string d;
+  if(!status) d += "Hit";
+  else d+="Double Down";
   int dealer = cardToInt(a);
   if(sum==21){
     res+="Congrats! Blackjack";
   }
-  else if(sum <9 && sum > 4) res+="Hit";
-  else if(sum > 16) res+="Stand";
-  else if(sum > 12 && dealer < 7) res+="Stand";
-  else if(sum > 12 && dealer > 6) res+= "Hit";
+  else if( sum >21) res+= "Sorry, hand over.";
+  else if(sum <9 && sum > 4) res+=hit;
+  else if(sum > 16) res+=stand;
+  else if(sum > 12 && dealer < 7) res+=stand;
+  else if(sum > 12 && dealer > 6) res+=hit;
   else if(sum == 12){
-    if(dealer > 3 && dealer < 7) res+="Stand";
-    else res+="Hit";
+    if(dealer > 3 && dealer < 7) res+=stand;
+    else res+=hit;
   }
   else if(sum ==11){
-    if(dealer == 11) res+="Hit";
-    else res+="Double Down";
+    if(dealer == 11) res+=hit;
+    else res+=d;
   }
   else if(sum ==10){
-    if(dealer > 9) res+="Hit";
-    else res+="Double Down";
+    if(dealer > 9) res+=hit;
+    else res+=d;
   }
   else if(sum ==9){
-    if(dealer < 7 && dealer > 2 ) res+="Double Down";
-    else res+="Hit";
+    if(dealer < 7 && dealer > 2 ) res+=d;
+    else res+=hit;
   }
   return res;
 }
@@ -92,9 +98,9 @@ int main(int argc, char const *argv[]) {
     if(evaluate){
       s = sumCards(userCards);
       cout<< "your total: "<<s<<endl;
-      output = coach(s, dealerCard);
+      output = coach(s, dealerCard, newHand);
       cout<<output<<endl;
-      if(output == "Stand" || output == "Double Down" || output == "Congrats! Blackjack" ){
+      if(output == "Stand" || output == "Double Down" || output == "Congrats! Blackjack" || output== "Sorry, hand over." ){
         cout << "Hand Ended"<<endl;
         userCards.resize(2);
         newHand = true;
